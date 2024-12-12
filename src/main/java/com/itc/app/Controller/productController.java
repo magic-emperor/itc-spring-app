@@ -22,43 +22,43 @@ import com.itc.app.service.productService;
 
 @RestController
 @RequestMapping("/api/products")
-@CrossOrigin({"http://localhost:3000", "**"})
+@CrossOrigin({ "https://itc-order-app.onrender.com", "**" })
 public class productController {
-	@Autowired 
-	public productService ProductService;
-	
-	@Autowired
+    @Autowired
+    public productService ProductService;
+
+    @Autowired
     private csvImport csvImport;
 
     @PostMapping("/upload")
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = "https://itc-order-app.onrender.com")
     public ResponseEntity<String> uploadCsv(@RequestParam("file") MultipartFile file) {
         try {
-        	csvImport.importCsv(file);
+            csvImport.importCsv(file);
             return new ResponseEntity<>("File uploaded and data saved successfully.", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Error uploading file: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
-    @CrossOrigin(origins = "http://localhost:3000")
+
+    @CrossOrigin(origins = "https://itc-order-app.onrender.com")
     @PostMapping
-    public ResponseEntity<?> createNewProduct(@RequestBody productDto ProductDto){
-    	productDto savedProduct = ProductService.createNewProduct(ProductDto);
-    	return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
+    public ResponseEntity<?> createNewProduct(@RequestBody productDto ProductDto) {
+        productDto savedProduct = ProductService.createNewProduct(ProductDto);
+        return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
     }
-    
-    @CrossOrigin(origins = "http://localhost:3000")
+
+    @CrossOrigin(origins = "https://itc-order-app.onrender.com")
     @GetMapping("{id}")
-    public ResponseEntity<?> getProductById(@PathVariable("id") Long ProductId){
-    	productDto ProductDto = ProductService.getProductById(ProductId);  	
-    	return  ResponseEntity.ok(ProductDto);
+    public ResponseEntity<?> getProductById(@PathVariable("id") Long ProductId) {
+        productDto ProductDto = ProductService.getProductById(ProductId);
+        return ResponseEntity.ok(ProductDto);
     }
-    
-    @CrossOrigin(origins = "http://localhost:3000")
+
+    @CrossOrigin(origins = "https://itc-order-app.onrender.com")
     @GetMapping()
-    public ResponseEntity<List<productDto>> getAllProducts(){
-    	List<productDto> Product = ProductService.getAllProduct();
-    	return  ResponseEntity.ok(Product);
+    public ResponseEntity<List<productDto>> getAllProducts() {
+        List<productDto> Product = ProductService.getAllProduct();
+        return ResponseEntity.ok(Product);
     }
 }

@@ -19,20 +19,20 @@ import com.itc.app.service.orderedService;
 
 @RestController
 @RequestMapping("/api/order")
-@CrossOrigin({ "http://localhost:3000", "**" })
+@CrossOrigin({ "https://itc-order-app.onrender.com", "**" })
 public class orderedController {
 
 	@Autowired
 	public orderedService OrderedService;
 
-	@CrossOrigin(origins = "http://localhost:3000")
+	@CrossOrigin(origins = "https://itc-order-app.onrender.com")
 	@PostMapping
 	public ResponseEntity<?> createNewOrder(@RequestBody orderdDto OrderdDto) {
 		orderdDto createNewOrder = OrderedService.createNewOrder(OrderdDto);
 		return new ResponseEntity<>(createNewOrder, HttpStatus.CREATED);
 	}
 
-	@CrossOrigin(origins = "http://localhost:3000")
+	@CrossOrigin(origins = "https://itc-order-app.onrender.com")
 	@GetMapping
 	public ResponseEntity<?> getAllOrders() {
 		List<orderdDto> getAllOrders = OrderedService.getAllOrders();
@@ -45,14 +45,14 @@ public class orderedController {
 		return ResponseEntity.ok(getOrdersUserId);
 	}
 
-	@CrossOrigin(origins = "http://localhost:3000")
+	@CrossOrigin(origins = "https://itc-order-app.onrender.com")
 	@GetMapping("{id}")
 	public ResponseEntity<?> getOrderById(@PathVariable("id") Long orderId) {
 		orderdDto getOrderById = OrderedService.getOrderById(orderId);
 		return ResponseEntity.ok(getOrderById);
 	}
 
-	@CrossOrigin(origins = "http://localhost:3000")
+	@CrossOrigin(origins = "https://itc-order-app.onrender.com")
 	@DeleteMapping("{id}")
 	public ResponseEntity<String> deleteById(@PathVariable("id") Long orderId) {
 		OrderedService.deleteOrderById(orderId);

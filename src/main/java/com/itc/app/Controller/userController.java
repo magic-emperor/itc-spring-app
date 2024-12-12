@@ -19,35 +19,37 @@ import com.itc.app.service.userService;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin({"http://localhost:3000", "**"})
+@CrossOrigin({ "https://itc-order-app.onrender.com", "**" })
 public class userController {
 	@Autowired
 	public userService UserService;
-	
+
 	@PostMapping
-	@CrossOrigin(origins = "http://localhost:3000")
-	public ResponseEntity<?> createNewUser(@RequestBody userDto UserDto){
+	@CrossOrigin(origins = "https://itc-order-app.onrender.com")
+	public ResponseEntity<?> createNewUser(@RequestBody userDto UserDto) {
 		userDto saveUsers = UserService.createNewUser(UserDto);
 		return new ResponseEntity<>(saveUsers, HttpStatus.CREATED);
 	}
-	
+
 	@GetMapping
-	@CrossOrigin(origins = "http://localhost:3000")
-	public ResponseEntity<List<userDto>> getAllUsers(){
+	@CrossOrigin(origins = "https://itc-order-app.onrender.com")
+	public ResponseEntity<List<userDto>> getAllUsers() {
 		List<userDto> AllUsers = UserService.getAllUsers();
 		return ResponseEntity.ok(AllUsers);
 	}
-	@CrossOrigin(origins = "http://localhost:3000")
+
+	@CrossOrigin(origins = "https://itc-order-app.onrender.com")
 	@GetMapping("{id}")
-	public ResponseEntity<?> getUserById(@PathVariable("id") Long userId){
+	public ResponseEntity<?> getUserById(@PathVariable("id") Long userId) {
 		userDto findUserById = UserService.getUserById(userId);
 		return ResponseEntity.ok(findUserById);
 	}
-	@CrossOrigin(origins = "http://localhost:3000")
+
+	@CrossOrigin(origins = "https://itc-order-app.onrender.com")
 	@DeleteMapping("{id}")
-	public ResponseEntity<String> deleteUserById(@PathVariable("id") Long userId){
+	public ResponseEntity<String> deleteUserById(@PathVariable("id") Long userId) {
 		UserService.deleteUserById(userId);
-		return ResponseEntity.ok("User Deleted Successfully " + userId); 
-		
+		return ResponseEntity.ok("User Deleted Successfully " + userId);
+
 	}
 }

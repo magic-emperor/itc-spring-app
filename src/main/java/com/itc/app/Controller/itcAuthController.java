@@ -22,8 +22,9 @@ import com.itc.app.productServiceImplemets.userServiceImplemets;
 
 @RestController
 @RequestMapping("/api/itc/authenticate")
-//@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", allowCredentials = "true")
-@CrossOrigin(origins = "http://localhost:3000")
+// @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*",
+// allowCredentials = "true")
+@CrossOrigin(origins = "https://itc-order-app.onrender.com")
 public class itcAuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -33,14 +34,14 @@ public class itcAuthController {
     private UserDetailsService userDetailsService;
     @Autowired
     private userServiceImplemets UserServiceImplemetnts;
-    
+
     @PostMapping
-    @CrossOrigin({"http://localhost:3000", "**"})
+    @CrossOrigin({ "https://itc-order-app.onrender.com", "**" })
     public ResponseEntity<?> authenticate(@RequestBody itcAuthRequest itcAuthRequest) {
         try {
             authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(itcAuthRequest.getUserPhone(),itcAuthRequest.getUserPassword())
-            );
+                    new UsernamePasswordAuthenticationToken(itcAuthRequest.getUserPhone(),
+                            itcAuthRequest.getUserPassword()));
             final userDto user = UserServiceImplemetnts.getUserById(UserServiceImplemetnts.getAllUsers().stream()
                     .filter(u -> u.getUserPhone().equals(itcAuthRequest.getUserPhone()))
                     .findFirst()
@@ -50,9 +51,11 @@ public class itcAuthController {
             final String jwt = ItcJwtUtil.generateToken(itcAuthRequest.getUserPhone(), userId, userRole);
             return ResponseEntity.ok(new itcAuthResponse(jwt));
         } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Incorrect username or password: " + e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Authentication error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Authentication error: " + e.getMessage());
         }
     }
 
