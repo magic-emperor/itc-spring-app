@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.itc.app.Dto.itcAuthRequest;
@@ -19,13 +21,13 @@ public class userServiceImplemets implements userService {
 	@Autowired
 	public userRepositories UserRepositories;
 	private final BCryptPasswordEncoder passwordEncoder;
-	
 
 	@Autowired
-	public userServiceImplemets(userRepositories userRepositories, BCryptPasswordEncoder passwordEncoder) {
+	public userServiceImplemets(userRepositories userRepositories,
+			@Qualifier("passwordEncoder") PasswordEncoder passwordEncoder) {
 		super();
 		UserRepositories = userRepositories;
-		this.passwordEncoder = passwordEncoder;
+		this.passwordEncoder = (BCryptPasswordEncoder) passwordEncoder;
 	}
 
 	@Override
@@ -55,12 +57,12 @@ public class userServiceImplemets implements userService {
 	public void deleteUserById(Long userId) {
 		// TODO Auto-generated method stub
 		UserRepositories.findById(userId).orElse(null);
-		UserRepositories.deleteById(userId); 
+		UserRepositories.deleteById(userId);
 	}
 
 	@Override
 	public void registerUser(userDto UserDto) {
-		userEntity users =  new userEntity();
+		userEntity users = new userEntity();
 		users.setUserId(UserDto.getUserId());
 		users.setUserName(UserDto.getUserName());
 		users.setUserPassword(passwordEncoder.encode(UserDto.getUserPassword()));

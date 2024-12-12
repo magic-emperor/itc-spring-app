@@ -19,11 +19,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-
 @Configuration
 @EnableWebSecurity
 public class itcSecurityConfig {
-	@Autowired
+    @Autowired
     private UserDetailsService userDetailsService;
     @Autowired
     private itcJwtRequestFilter itcjwtRequestFilter;
@@ -31,16 +30,15 @@ public class itcSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors().and()
-            .csrf().disable()
-            .authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/api/itc/authenticate","/api/users","/public-endpoint","/ws/**").permitAll()
-                .anyRequest().authenticated()
-            )
-            .sessionManagement((session) -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            .addFilterBefore(itcjwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+                .cors().and()
+                .csrf().disable()
+                .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers("/api/itc/authenticate", "/api/users", "/public-endpoint", "/ws/**")
+                        .permitAll()
+                        .anyRequest().authenticated())
+                .sessionManagement((session) -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(itcjwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
@@ -55,7 +53,7 @@ public class itcSecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-    
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
