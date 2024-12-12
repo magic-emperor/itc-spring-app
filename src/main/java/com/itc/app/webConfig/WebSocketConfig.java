@@ -22,7 +22,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // Register the /ws endpoint with SockJS support
         registry.addEndpoint("/ws")
-                .setAllowedOriginPatterns("*", "http://localhost:3000", "https://itc-app.onrender.com")
+                .setAllowedOriginPatterns("*", "http://localhost:3000", "https://itc-app.onrender.com",
+                        "https://itc-order-app.onrender.com")
                 .withSockJS();
     }
 }
