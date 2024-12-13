@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
 
 import com.itc.app.Dto.itcAuthRequest;
 import com.itc.app.Dto.itcAuthResponse;
@@ -30,32 +31,70 @@ public class itcAuthController {
     private AuthenticationManager authenticationManager;
     @Autowired
     private itcJwtUtil ItcJwtUtil;
+    @SuppressWarnings("unused")
     @Autowired
     private UserDetailsService userDetailsService;
     @Autowired
     private userServiceImplemets UserServiceImplemetnts;
 
+    @SuppressWarnings("unused")
     @PostMapping
     @CrossOrigin({ "https://itc-order-app.onrender.com", "**" })
     public ResponseEntity<?> authenticate(@RequestBody itcAuthRequest itcAuthRequest) {
         try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(itcAuthRequest.getUserPhone(),
+            // Log authentication attempt
+            System.out.println("Authentication attempt for phone: " + itcAuthRequest.getUserPhone());
+
+            // Validate input
+            if (itcAuthRequest.getUserPhone() == null || itcAuthRequest.getUserPassword() == null) {
+                return ResponseEntity.badRequest().body("Phone and password are required");
+            }
+
+            // Attempt authentication
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            itcAuthRequest.getUserPhone(),
                             itcAuthRequest.getUserPassword()));
-            final userDto user = UserServiceImplemetnts.getUserById(UserServiceImplemetnts.getAllUsers().stream()
+
+            // Find user
+            userDto user = UserServiceImplemetnts.getAllUsers().stream()
                     .filter(u -> u.getUserPhone().equals(itcAuthRequest.getUserPhone()))
                     .findFirst()
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found")).getUserId());
+                    .orElseThrow(() -> new UsernameNotFoundException(
+                            "User not found with phone: " + itcAuthRequest.getUserPhone()));
+
+            // Extract user details
             final long userId = user.getUserId();
             final String userRole = user.getUserRole();
-            final String jwt = ItcJwtUtil.generateToken(itcAuthRequest.getUserPhone(), userId, userRole);
+
+            // Generate JWT
+            final String jwt = ItcJwtUtil.generateToken(
+                    itcAuthRequest.getUserPhone(),
+                    userId,
+                    userRole);
+
+            // Log successful authentication
+            System.out.println("Authentication successful for user: " + user.getUserName());
+
             return ResponseEntity.ok(new itcAuthResponse(jwt));
+
         } catch (BadCredentialsException e) {
+            System.err.println("Bad credentials for phone: " + itcAuthRequest.getUserPhone());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Incorrect username or password: " + e.getMessage());
+                    .body("Incorrect username or password");
+
+        } catch (UsernameNotFoundException e) {
+            System.err.println("User not found: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+
         } catch (Exception e) {
+            // Log the full stack trace
+            System.err.println("Authentication error:");
+            e.printStackTrace();
+
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Authentication error: " + e.getMessage());
+                    .body("Internal server error: " + e.getMessage());
         }
     }
 

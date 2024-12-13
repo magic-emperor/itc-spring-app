@@ -15,13 +15,14 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Component
 public class itcJwtUtil {
 
-	private String secretKey;
+    private String secretKey;
 
-	@Value("${secret.key}")
-	public void setSecretKey(String secretKey) {
-	    this.secretKey = new String(secretKey);
-	    System.out.println("Secret Key Injected: " + this.secretKey);
-	}
+    @Value("${secret.key}")
+    public void setSecretKey(String secretKey) {
+        // this.secretKey = new String(secretKey);
+        this.secretKey = secretKey;
+        System.out.println("Secret Key Injected: " + this.secretKey);
+    }
 
     public String generateToken(String userPhone, long userId, String userRole) {
         return Jwts.builder()
@@ -49,12 +50,13 @@ public class itcJwtUtil {
         return claims.getExpiration().before(new Date());
     }
 
-	public boolean validateToken(String jwt, String username) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	public Long getUserIdFromToken(String token) {
-	    Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
-	    return claims.get("userId", Long.class);
-	}
+    // public boolean validateToken(String jwt, String username) {
+    // // TODO Auto-generated method stub
+    // return false;
+    // }
+
+    public Long getUserIdFromToken(String token) {
+        Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+        return claims.get("userId", Long.class);
+    }
 }
