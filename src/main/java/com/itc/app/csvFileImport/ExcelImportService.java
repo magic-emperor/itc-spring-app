@@ -1,4 +1,4 @@
-package com.itc.app.excelFileImport;
+package com.itc.app.csvFileImport;
 
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
